@@ -4,6 +4,7 @@
     border-radius: 5px;
     padding: 5px;
     cursor: text;
+    position: relative;
 }
 
 .pillbox-input{
@@ -21,4 +22,13 @@
 
 .pillbox li span{
     cursor: pointer;
+}
+
+.pillbox-options{
+    height: 100px;
+    /* display: none; */
+    width: 100%;
+    position: absolute;
+    bottom: -101px;
+    left: 0;
 }
