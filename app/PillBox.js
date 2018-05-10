@@ -1,25 +1,25 @@
 var allOptions = [];
-var selectDefault;
+var selectDefaultHTML;
 var selectedOptions = [];
 var select;
+var input;
 
 var updateSelect = () => {
-    
+    Array.apply(null,select.options).forEach(el => {
+        if(selectedOptions.find(inEl => el.text === inEl) != undefined){
+            el.selected = true;
+        }else{
+            el.selected = false;
+        }
+    });
 };
 
-var add = event => {
-    const exists = allOptions.findIndex(el => el.text.toLowerCase().includes(event.target.value.toLowerCase()));
+var toggle = event => {
+    const option = allOptions.find(el => el.text.toLowerCase().includes(event.target.value.toLowerCase()));
     if (event.target.value !== '') {
-        if(event.keyCode === 13 && exists != -1){
-            let li = document.createElement("li");
-            li.innerHTML = `${allOptions[exists].text} <span>&times</span>`;
-            li.querySelector('span').addEventListener("click", e => {
-                e.target.parentNode.remove();
-            });
+        if(event.keyCode === 13 && option != undefined){
+            createDelete(option.text);
             event.target.value = "";
-            event.target.parentNode.insertBefore(li, event.target);
-            selectedOptions.push(allOptions[exists].text);
-            updateSelect();
         }else{
             while(select.firstChild){
                 select.removeChild(select.firstChild);
@@ -28,7 +28,33 @@ var add = event => {
             return;
         }
     }
-    select.innerHTML = selectDefault;
+    select.innerHTML = selectDefaultHTML;
+    updateSelect();
+};
+
+var createDelete = option => {
+    if(selectedOptions.find(el => el === option) === undefined){
+        let li = document.createElement("li");
+        li.innerHTML = `${option} <span>&times</span>`;
+        li.querySelector('span').addEventListener("click", e => {
+            createDelete(option);
+        });
+        input.parentNode.insertBefore(li, input);
+        selectedOptions.push(option);
+    }else{
+        selectedOptions.splice(selectedOptions.indexOf(option),1);
+        select.parentNode.querySelectorAll('li').forEach(el=>{
+            if(el.innerHTML.includes(option)){
+                select.parentNode.removeChild(el);
+            }
+        });
+    }
+};
+
+var selectClick = (event) => {
+    event.preventDefault();
+    createDelete(event.target.text);
+    updateSelect();
 };
 
 var init = () => {
@@ -37,20 +63,16 @@ var init = () => {
     ul.innerHTML =
         '<input size="5" class="pillbox-input" type="text" name="" id="">';
 
-    let input = ul.querySelector(".pillbox-input");
-
+    input = ul.querySelector(".pillbox-input");
+   
     input.resize();
-    input.addEventListener("keyup", add);
-    /* input.addEventListener('focus',(e) => {
-        select.style.display = 'block';
-    })
-    input.addEventListener('focusout',e => {
-        select.style.display = 'none';
-    }); */
+    input.addEventListener("keyup", toggle);
 
     ul.addEventListener("click", e => {
         ul.querySelector(".pillbox-input").focus();
     });
+
+    select.addEventListener('mousedown', selectClick);
 
     select.before(ul);
     ul.appendChild(select);
@@ -59,10 +81,12 @@ var init = () => {
     for(let i=0;i<select.length;i++){
         allOptions.push(select.options[i]);
     }
-    selectDefault = select.innerHTML;
+    selectDefaultHTML = select.innerHTML;
 };
 
 HTMLSelectElement.prototype.PillBox = function() {
     select = this;
     init();
 };
+
+

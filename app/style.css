@@ -7,6 +7,10 @@
     position: relative;
 }
 
+.pillbox:hover .pillbox-options{
+    display: inline;
+}
+
 .pillbox-input{
     border: none;
 }
@@ -26,9 +30,10 @@
 
 .pillbox-options{
     height: 100px;
-    /* display: none; */
+    display: none;
     width: 100%;
     position: absolute;
     bottom: -101px;
     left: 0;
+    z-index: 50;
 }
