@@ -86,6 +86,15 @@ var test = () => {
                 allOptions.push(select.options[i]);
             }
             selectDefaultHTML = select.innerHTML;
+        },
+
+        getSelected: () => {
+            return selectedOptions;
+        },
+
+        clear: () => {
+            selectedOptions = [];
+            updateSelect();
         }
     };
 }
