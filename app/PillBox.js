@@ -164,6 +164,8 @@ var pillbox = () => {
 
     var clickProcess = e => {
         requestPill(e.target.innerHTML);
+        e.stopPropagation();
+        HTML_input.focus();
     }
 
     var inputMenuOpen = e => {
@@ -173,7 +175,18 @@ var pillbox = () => {
     };
 
     var inputMenuClose = e => {
-        HTML_menu.classList.remove('show');
+        document.querySelectorAll('.pillbox').forEach(pillbox => {
+            if (e.target !== pillbox && !pillbox.contains(e.target)) {
+                var dropdowns = pillbox.getElementsByClassName("pillbox-options");
+                var i;
+                for (i = 0; i < dropdowns.length; i++) {
+                    var openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        });
     };
 
     var setUpListeners = () => {
@@ -185,7 +198,7 @@ var pillbox = () => {
 
         HTML_input.addEventListener('focus',inputMenuOpen);
 
-        HTML_input.addEventListener('focusout',inputMenuClose);
+        document.addEventListener('click',inputMenuClose);
     }
 
     return{
